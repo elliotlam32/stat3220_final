@@ -1,0 +1,125 @@
+---
+title: "EDA Peer Review"
+author: Data Dogs
+output: pdf_document
+---
+
+## Review Group Name: (Le)Bron's Betas
+
+Answer the following about the other group.
+
+### Response Variable
+
+- What is the response variable?
+
+  Golf Handicap
+
+- Based on the histogram does it look appropriate? Describe the shape of the distribution.
+
+  The distribution of the response variable(golf handicap) is approximately left skewed and unimodal. There are few to no outliers in the histogram. The histogram is also suitable for multiple linear regression, as it's discrete over a wide range of values, with little to no outliers.
+
+### Research Questions
+
+- What are the three variables of interest?
+
+  Smash Factor, Height, Absolute Value of Face to Path Distance
+
+- What suggestions do you have to improve the specificity of these questions?
+
+  Reword questions to make investigation more clear. Make wording more specific, "better" doesn't adequately describe what you're investigating/trying to see.
+
+### Data and Variables
+
+- List the primary sources used
+
+  Touchet's ELDRICK Portal
+
+- Are there at least 3 qualitative and 3 quantitative. And a total of 8 variables?
+
+  Yes there are 3 qual and 3 qual variables, and a total of 8 variables.
+
+- For qualitative variables, are there less than 5 levels for each?
+
+  Yes. There are less than 5 levels for each of the qualitative variables.
+
+- From EDA, which variables seemed most important?
+
+  Within the EDA, smash factor seems to be the most important var. As out of all the variables, the association/relationship seems the most significant. Compred to other variables, it had quite a strong correlation, and seemed stronger than the other variables. Also there was a noticeable slope/relationship in the EDA(scatterplot).
+
+- Should there be any concerns for multicollinearity?
+
+  Swing Speed, Ball Speed, and Smash Factor might have high correlations with one another, as the variables measure similar things. A high swing speed oftentimes
+
+### Overall comments
+
+- What suggestions do you have moving forward for this group?
+
+  Improve your research questions so that they're easily understandable by everyone. Also in your introduction or research question, describe/define the variables you're investigating so that everyone can understand them, whether they play golf or not.
+
+- What improvements might you use in your own project?
+
+  Defining the variables used in the questions, also perhaps reword the questions so that the investigation is more clear.
+
+\newpage
+
+## Your Group Name: Data Dogs
+
+Answer the following about the your own group.
+
+### Response Variable
+
+- What is the response variable?
+
+  WoBA(Weighted - On Base Average)
+
+- Based on the histogram does it look appropriate? Describe the shape of the distribution. What is the range of values?
+
+  The histogram looks appropriate for multiple linear regression, as it's continous with few outliers. The shape of the histogram is unimodal and symmetric. The histogram seems normal, but this also could be a consequence of the number of bins used to plot it.
+
+- What comments did your review group provide?
+
+  We told the other group the make their research questions more clear, and also to define/describe the variables their research questions assess.
+
+### Research Questions
+
+- List your three research questions, including any corrections or comments from your reviewers.
+
+  - Do MLB players who have a higher exit velo have a higher WoBA than players who have a lower average exit velo?
+
+  - Do MLB players with a larger launch angle average, have a higher WoBA than players
+
+  - Is the WoBA value higher for players in the higher experience group (6-9), compared to players in the less experienced group (0-3)
+
+  Feedback: for that third research question, make it more clear that it's comparing/investigating across the entire category, and not just 2 values of the qual variable.
+
+### Data and Variables
+
+- List the primary sources used
+
+  MLB Stats API
+
+- Do you meet the criteria for the explanatory variables?
+
+  Yes, the criteria is met for the explanatory variables, we have at least 3 qual and at least 3 quant variables, as well as havinga total of 8 variables.
+
+- Were there any suggestions about the variables you might incorporate?
+
+  Not really.
+
+- Which variables seemed most important?
+
+  From our EDA, the variables that seemed the most important were exit velo, as there was a noticeable relationship between it and the response variable. While for the other variables we explored within our EDA, their relationship was weaker/not very strong.
+
+- Should there be any concerns for multicollinearity?
+
+  Yes, there are some concerns for multicollinearity within this dataset. Some of the variables that may be correlated with each other include average swing speed and exit velocity. Also barrel batted rate and hard hit percentage.
+
+### Overall comments
+
+- From this session, what improvements might you use in your project?
+
+  From this session, we'll improve our research questions so that it's more clear that we're investigating the entire varialbe and not just certain levels of it. Also we'll clearly define the variables so the audience understands exactly what we're investigating.
+
+- What is your group's plan to successfully complete this project moving forward?
+
+  For our plan moving forward, we plan to meet sometime this weekend to discuss how we want to go about creating the mlr model(Whether to use variable screening, which variables to use, etc). We also plan to outline the write-up and the overall process in which we want to tackle the project.
