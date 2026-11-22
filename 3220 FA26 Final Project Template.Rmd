@@ -30,9 +30,14 @@ boxplot(woba~age_group, baseball_data, ylab = "woba")
 head(baseball_data)
 
 
-#interaction plot
-#interaction bet
+quant_vars <- c("pa", "k_percent", "avg_swing_speed",
+                "exit_velocity_avg", "launch_angle_avg")
 
+round(cor(baseball_data[, quant_vars], baseball_data$woba), 3)
+range(baseball_data$woba)
+tapply(baseball_data$woba, baseball_data$age_group, summary)
+tapply(baseball_data$woba, baseball_data$position_group, summary)
+tapply(baseball_data$woba, baseball_data$batting_hand, summary)
 ## Use this chunk for reading in packages.
 ## Use this chunk for reading in the data, combining the data, and any other major data cleaning that is not relevant to show.
 ## Remove the ## before all code.
@@ -42,23 +47,51 @@ head(baseball_data)
 
 ## Introduction
 
-We investigate how different factors impact woba, to see how players could potentially improve it, and thus their contribution to the team.
+Major League Baseball, more commonly referred to as the MLB, is one of the big four professional North American sports leagues, alongside the NBA, NFL, and NHL. As a whole, sports have shifted to more analytical perspectives to make personnel and coaching decisions. The same holds true for the MLB, which has placed a greater emphasis on statistical analysis and the use of advanced metrics to evaluate player performance. This was popularized by the practice of Sabermetrics, which was popularized by the Oakland Athletics and has significantly changed how the front offices of the MLB make decisions since the 2000s (Kelly, 2019).
 
-Research Questions
+While baseline statistics such as batting average and home runs can explain a player’s offensive production, advanced metrics can give a more comprehensive overview. This is done by weighting different offensive outcomes based on their impact on scoring runs, rather than keeping each outcome the same. One metric used primarily is weighted on-base average (wOBA), which measures a player’s overall offensive production, assigning different coefficients to all methods of getting on base, including walks (Major League Baseball, n.d.). These coefficients are calculated with past MLB data to estimate how much each outcome contributed to scoring runs. 
 
-- Do MLB players who have a higher exit velo have a higher WoBA than players who have a lower average exit velo?
+Understanding which batting metrics and player characteristics most associated with wOBA can provide valuable insights into predicting offensive performance. In this analysis, we will use multiple linear regression to examine the relationships between various predictors and wOBA among MLB players during the 2026 season. Specifically, we will consider quantitative predictors, including but not limited to strikeout percentage (K%), walk percentage (BB%), and hard-hit percentage. Additionally, qualitative player characteristics, including experience level, batting hand, and position, will be researched to assess their potential influence on wOBA. Our research will be guided by the following questions:
 
-- Do MLB players with a larger launch angle average, have a higher WoBA than players
+- Do MLB players who have a higher exit velocity have a higher wOBA than players who have a lower average exit velocity?
 
-- Is the WoBA value higher for players in the higher experience group (6-9), compared to players in the less experienced group (0-3)
+- Do MLB players with a higher average launch angle have a higher wOBA than players with a lower average launch angle?
 
-can we include other variables in our model that aren't in our research questions?
+- Do MLB players with higher levels of experience have higher wOBA values compared to players in lower experience groups?
+
+To investigate these questions, data was sourced from Baseball Savant, which is MLB’s Statcast data and the official MLB API. The analysis will focus on players with at least 200 plate appearances during the 2026 season to ensure a sufficient amount of batting data for each player.
 
 ## Data Summary
 
 ### Metadata Description
 
+In order to obtain our data for this project, we sourced two primary datasets and merged them to create a single dataframe for our analysis. Our first primary source came from Baseball Savant and contained player statistics regarding performance from the 2026 MLB season. Our second primary source came from the MLB website and contained information regarding the attributes of players, such as their age and position. While neither data source specifies a specific author or person who collected the data, both of them are quite trustworthy. The MLB collects its player attribute data at the start of every season, and the player statistic data used by Baseball Savant is provided by the MLB. Overall, there are not many concerns for reliability, as all the data used comes directly from the MLB
+
+We had to transform one of our variables to make sure our project had enough qualitative variables to be suitable for analysis. In our dataset, we manipulated the age variable into a qualitative variable from a quantitative variable. In this qualitative variable, the players were classified into one of 4 categories: “Under 25”, “25-29”, “30-34”,”34+.” Aside from this, none of the other variables in our dataset were transformed or manipulated.
+
 ### EDA Summary
+
+Response Variable - WoBA: The distribution of our response variable, wOBA for the 2026 MLB, is unimodal and symmetric. The values range from 0.191 to 0.429, and there aren’t any extreme outliers visible in the distribution or dataset.
+
+Quantitative EDA Summary:
+
+Plate Appearances has the strongest correlation with our response variable wOBA, with a correlation of 0.457. The quantitative variable with the next highest correlation with wOBA, is Average Exit Velocity, with a correlation of 0.448. The other quantitative variables have relatively weak correlations, with Average Swing Speed having a correlation of 0.259, Strikeout Percentage having a correlation of -0.069, and Launch Angle Average having a correlation of 0.070.
+
+Qualitative EDA Summary:
+
+There doesn’t seem to be a relationship between WoBA and age group, as the mean value of WoBA is quite similar among the “Under 25”, “25-29”, and “30-34” groups. However, the mean does fall a little for the 35+ age group; this could indicate a weak relationship. The means for the  “Under 25”, “25-29”, and “30-34” groups are 0.3180, 0.3190, and 0.3190, respectively. The mean for the 35+ age group is 0.3060.
+
+There appears to be a relationship between WoBA and position group, as the mean value of WoBA differs between some of the levels. Designated Hitters have a higher mean WoBA than the other groups, with a mean of 0.3230. Catchers have a lower mean WoBA than the other groups, with a mean WoBA of 0.3050.
+
+There appears to be a relationship between WoBA and batting hand, as the mean value of WoBA differs slightly across all levels of batting hand. The means for the left, right, and switch groups are 0.3231, 0.3151, and 0.3044, respectively.
+
+Interaction EDA Summary:
+
+There appears to be an interaction between Age Group and Position, as the interaction plot shows that the slopes are not parallel, and the lines cross over several times. This suggests that the effect of age on wOBA may depend on the position a player plays.
+
+The grouped scatterplot for Average Exit Velocity and Batting Hand suggests that there isn’t a strong interaction between the two, as the slopes of the lines are relatively similar. This means that the effect of Average Exit Velocity on wOBA doesn’t depend on the player’s batting hand.
+
+The grouped scatterplot for Average Launch Angle and Position suggests that there isn’t a strong interaction between the two variables, as the slopes of the lines are relatively similar and don’t show any drastic crossing. The effect of average launch angle on wOBA doesn’t seem to be dependent on position.
 
 ```{r, echo=FALSE, warning=FALSE,results=FALSE}
 ## Use this code chunk can be used to execute any functions or summaries 
@@ -174,6 +207,14 @@ for (g in levels(as.factor(baseball_data$position_group))) {
 
 ### Background References
 
+Major League Baseball. (n.d.). Weighted on-base average (wOBA). MLB.com.[ ](https://www.mlb.com/glossary/advanced-stats/weighted-on-base-average?utm_source=chatgpt.com)<https://www.mlb.com/glossary/advanced-stats/weighted-on-base-average>
+
+Kelly, M. (2019, May 27). What is sabermetrics? MLB.com.[ https://www.mlb.com/news/sabermetrics-in-baseball-a-casual-fans-guide](https://www.mlb.com/news/sabermetrics-in-baseball-a-casual-fans-guide?utm_source=chatgpt.com)
+
 ### Data Sources
+
+Major League Baseball. (n.d.). Statcast custom leaderboard. Baseball Savant.[ https://baseballsavant.mlb.com/leaderboard/custom?year=2026&type=batter&filter=&min=q&selections=pa%2Ck_percent%2Cwoba%2Cavg_swing_speed%2Cexit_velocity_avg%2Claunch_angle_avg%2Cbarrel_batted_rate%2Chard_hit_percent%2Cwhiff_percent&chart=false&x=pa&y=pa&r=no&chartType=beeswarm&sort=avg_swing_speed&sortDir=desc](https://baseballsavant.mlb.com/leaderboard/custom?year=2026&type=batter&filter&min=q&selections=pa,k_percent,woba,avg_swing_speed,exit_velocity_avg,launch_angle_avg,barrel_batted_rate,hard_hit_percent,whiff_percent&chart=false&x=pa&y=pa&r=no&chartType=beeswarm&sort=avg_swing_speed&sortDir=desc&utm_source=chatgpt.com)
+
+Major League Baseball. (n.d.). MLB Stats API: Player data for the 2026 season [Data set].[ https://statsapi.mlb.com/api/v1/sports/1/players?season=2026&utm](https://statsapi.mlb.com/api/v1/sports/1/players?season=2026&utm&utm_source=chatgpt.com)
 
 ### Additional Help
