@@ -103,7 +103,59 @@ The grouped scatterplot for Average Launch Angle and Position suggests that ther
 
 ```{r, echo=FALSE, warning=FALSE,results=FALSE}
 ## This code chunk can be used to execute any functions or summaries that will not be included in your output
+## install.packages("car")   # only needed the first time
+library(car)
+## install.packages("olsrr")   # first time only
+library(olsrr)
 
+model_1 <- lm(woba~pa+k_percent+avg_swing_speed+exit_velocity_avg+launch_angle_avg,data=baseball_data)
+basecor <- round(cor(baseball_data[, c("pa", "k_percent", "avg_swing_speed",
+                                        "exit_velocity_avg", "launch_angle_avg")]), 4)
+basecor
+model_1_vif<-round(vif(model_1),3)
+model_1_vif
+mean(model_1_vif)
+
+##variable screening
+
+ols_step_both_p(model_1,p_ent=0.15,p_rem=0.15,details=T)
+```
+
+```{r}
+## fit model with qualitative variables
+
+model_2 <- lm(woba~pa+k_percent+avg_swing_speed+exit_velocity_avg+launch_angle_avg+experience_group + position_group+batting_hand,data=baseball_data)
+summary(model_2)
+#nested f test - if any of the quals come back sig, we can fit an interaction
+#reduced models
+model_2_experience_group <- lm(woba~pa+k_percent+avg_swing_speed+exit_velocity_avg+launch_angle_avg+position_group+batting_hand,data=baseball_data)
+
+model_2_position_group <- lm(woba~pa+k_percent+avg_swing_speed+exit_velocity_avg+launch_angle_avg+experience_group+batting_hand,data=baseball_data)
+
+model_2_batting_hand <- lm(woba~pa+k_percent+avg_swing_speed+exit_velocity_avg+launch_angle_avg+experience_group + position_group,data=baseball_data)
+
+# Nested F-tests: anova(reduced, complete)
+anova(model_2_experience_group, model_2)
+anova(model_2_position_group, model_2)
+anova(model_2_batting_hand, model_2)
+```
+
+```{r}
+# Complete model (no interactions) = model_2
+
+# Interaction 1: experience_group x position_group
+model_3a <- lm(woba~pa+k_percent+avg_swing_speed+exit_velocity_avg+launch_angle_avg+experience_group+position_group+batting_hand+experience_group:position_group,data=baseball_data)
+
+# Interaction 2: exit_velocity_avg x batting_hand
+model_3b <- lm(woba~pa+k_percent+avg_swing_speed+exit_velocity_avg+launch_angle_avg+experience_group+position_group+batting_hand+exit_velocity_avg:batting_hand,data=baseball_data)
+
+# Interaction 3: launch_angle_avg x position_group
+model_3c <- lm(woba~pa+k_percent+avg_swing_speed+exit_velocity_avg+launch_angle_avg+experience_group+position_group+batting_hand+launch_angle_avg:position_group,data=baseball_data)
+
+# Nested F-tests: anova(reduced, complete)
+anova(model_2, model_3a)
+anova(model_2, model_3b)
+anova(model_2, model_3c)
 ```
 
 ## Conclusions
@@ -209,12 +261,12 @@ for (g in levels(as.factor(baseball_data$position_group))) {
 
 Major League Baseball. (n.d.). Weighted on-base average (wOBA). MLB.com.[ ](https://www.mlb.com/glossary/advanced-stats/weighted-on-base-average?utm_source=chatgpt.com)<https://www.mlb.com/glossary/advanced-stats/weighted-on-base-average>
 
-Kelly, M. (2019, May 27). What is sabermetrics? MLB.com.[ https://www.mlb.com/news/sabermetrics-in-baseball-a-casual-fans-guide](https://www.mlb.com/news/sabermetrics-in-baseball-a-casual-fans-guide?utm_source=chatgpt.com)
+Kelly, M. (2019, May 27). What is sabermetrics? MLB.com.[https://www.mlb.com/news/sabermetrics-in-baseball-a-casual-fans-guide](https://www.mlb.com/news/sabermetrics-in-baseball-a-casual-fans-guide?utm_source=chatgpt.com)
 
 ### Data Sources
 
-Major League Baseball. (n.d.). Statcast custom leaderboard. Baseball Savant.[ https://baseballsavant.mlb.com/leaderboard/custom?year=2026&type=batter&filter=&min=q&selections=pa%2Ck_percent%2Cwoba%2Cavg_swing_speed%2Cexit_velocity_avg%2Claunch_angle_avg%2Cbarrel_batted_rate%2Chard_hit_percent%2Cwhiff_percent&chart=false&x=pa&y=pa&r=no&chartType=beeswarm&sort=avg_swing_speed&sortDir=desc](https://baseballsavant.mlb.com/leaderboard/custom?year=2026&type=batter&filter&min=q&selections=pa,k_percent,woba,avg_swing_speed,exit_velocity_avg,launch_angle_avg,barrel_batted_rate,hard_hit_percent,whiff_percent&chart=false&x=pa&y=pa&r=no&chartType=beeswarm&sort=avg_swing_speed&sortDir=desc&utm_source=chatgpt.com)
+Major League Baseball. (n.d.). Statcast custom leaderboard. Baseball Savant.[https://baseballsavant.mlb.com/leaderboard/custom?year=2026&type=batter&filter=&min=q&selections=pa%2Ck_percent%2Cwoba%2Cavg_swing_speed%2Cexit_velocity_avg%2Claunch_angle_avg%2Cbarrel_batted_rate%2Chard_hit_percent%2Cwhiff_percent&chart=false&x=pa&y=pa&r=no&chartType=beeswarm&sort=avg_swing_speed&sortDir=desc](https://baseballsavant.mlb.com/leaderboard/custom?year=2026&type=batter&filter&min=q&selections=pa,k_percent,woba,avg_swing_speed,exit_velocity_avg,launch_angle_avg,barrel_batted_rate,hard_hit_percent,whiff_percent&chart=false&x=pa&y=pa&r=no&chartType=beeswarm&sort=avg_swing_speed&sortDir=desc&utm_source=chatgpt.com)
 
-Major League Baseball. (n.d.). MLB Stats API: Player data for the 2026 season [Data set].[ https://statsapi.mlb.com/api/v1/sports/1/players?season=2026&utm](https://statsapi.mlb.com/api/v1/sports/1/players?season=2026&utm&utm_source=chatgpt.com)
+Major League Baseball. (n.d.). MLB Stats API: Player data for the 2026 season [Data set].[https://statsapi.mlb.com/api/v1/sports/1/players?season=2026&utm](https://statsapi.mlb.com/api/v1/sports/1/players?season=2026&utm&utm_source=chatgpt.com)
 
 ### Additional Help
