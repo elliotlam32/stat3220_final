@@ -158,6 +158,13 @@ anova(model_2, model_3b)
 anova(model_2, model_3c)
 ```
 
+```{r}
+model_final <- model_2 <- lm(woba~pa+k_percent+avg_swing_speed+exit_velocity_avg+launch_angle_avg,data=baseball_data)
+residualPlots(model_final,tests=F)
+plot(model_final, which=c(1,2))
+hist(residuals(model_final))
+```
+
 ## Conclusions
 
 \newpage
